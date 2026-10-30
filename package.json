@@ -1,0 +1,11 @@
+{
+  "name": "jarvis-akademik",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Agen AI di Telegram yang menjadwalkan dan menyusun ulang jadwal belajar mahasiswa (n8n + Gemini + Google Calendar).",
+  "scripts": {
+    "build": "node build/build-workflow.js",
+    "test": "node --test test/"
+  },
+  "engines": { "node": ">=20" }
+}
