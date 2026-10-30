@@ -174,8 +174,12 @@ test('E2E: sinkron -> susun ulang -> pesan pagi -> progres -> check-in', { skip:
   assert.equal(runSql('auth_settings', ['999'])[0].owner_chat_id, '777', 'chat lain tidak bisa ambil alih');
 
   // 2) Sinkron: Lentera (fixture asli) + Classroom (dipalsukan)
+    // Fixture diekspor 20 Okt 2026. Semua tanggalnya digeser supaya "20 Okt" = hari
+  // ini, sehingga deadline di fixture tetap di masa depan kapan pun test dijalankan.
+  const shiftMs = Math.floor((now - Date.UTC(2026, 9, 20)) / (24 * MS_H)) * 24 * MS_H;
   const ics = fs.readFileSync(path.join(__dirname, 'fixtures', 'lentera_sample.ics'), 'utf8')
-    .replace(/2026102[2-9]T/g, (m) => m); // tanggal fixture dibiarkan apa adanya
+    .replace(/(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})Z/g, (_, y, mo, d, h, mi, s) =>
+      new Date(Date.UTC(+y, +mo - 1, +d, +h, +mi, +s) + shiftMs).toISOString().replace(/[-:]|\.\d{3}/g, ''));
   const settings = runSql('settings')[0];
   const lentera = await runCode('S: Parse Lentera', [{ data: ics }], { 'S: Muat setting': [settings] });
   assert.ok(lentera[0].lentera_tasks.length >= 5);
